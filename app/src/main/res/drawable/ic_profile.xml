@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="?attr/colorOnSurface">
+    
+    <!-- Outer circle -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:pathData="M12,12 m-10,0 a10,10 0,1 1,20 0 a10,10 0,1 1,-20 0" />
+    
+    <!-- User head -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:pathData="M12,9 m-3,0 a3,3 0,1 1,6 0 a3,3 0,1 1,-6 0" />
+    
+    <!-- User body -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M8,14 a5,5 0,0 1,8 0" />
+        
+</vector>

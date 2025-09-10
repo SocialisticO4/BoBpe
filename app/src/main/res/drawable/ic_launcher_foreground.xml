@@ -1,0 +1,21 @@
+<!-- ic_launcher_foreground.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group android:scaleX="0.6" android:scaleY="0.6" android:translateX="21.6" android:translateY="21.6">
+
+    <!-- PhoneBe "Be" text, scaled and centered appropriately for foreground -->
+    <group android:fillColor="#FFFFFF">
+        <!-- Letter "B" -->
+        <path
+            android:pathData="M16,20 L16,44 L26,44 C30,44 32,42 32,38 L32,37 C32,35 31,34 29,33 C31,32 32,30 32,28 L32,26 C32,22 30,20 26,20 L16,20 Z M20,24 L25,24 C26,24 27,25 27,26 L27,28 C27,29 26,30 25,30 L20,30 L20,24 Z M20,34 L25,34 C26,34 27,35 27,36 L27,38 C27,39 26,40 25,40 L20,40 L20,34 Z" />
+        
+        <!-- Letter "e" -->
+        <path
+            android:pathData="M36,28 C36,24 38,22 42,22 C46,22 48,24 48,28 L48,30 L40,30 C40,32 41,33 42,33 C43,33 44,32 44,31 L47,31 C47,34 45,36 42,36 C38,36 36,34 36,30 L36,28 Z M40,27 L44,27 C44,25 43,25 42,25 C41,25 40,25 40,27 Z" />
+    </group>
+    </group>
+</vector>

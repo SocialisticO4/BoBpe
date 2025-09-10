@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Document outline -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:pathData="M14,2 H6 a2,2 0,0 0,-2 2 v16 a2,2 0,0 0,2 2 h12 a2,2 0,0 0,2 -2 V8 l-6,-6 z" />
+    
+    <!-- Corner fold -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M14,2 v6 h6" />
+    
+    <!-- Transfer arrows -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M8,13 h8 M8,13 l2,-2 M8,13 l2,2 M16,16 H8 M16,16 l-2,-2 M16,16 l-2,2" />
+        
+</vector>

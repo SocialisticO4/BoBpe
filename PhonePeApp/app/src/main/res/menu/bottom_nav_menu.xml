@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Home" />
+    
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/ic_search"
+        android:title="Search" />
+    
+    <!-- Placeholder for center FAB -->
+    <item
+        android:id="@+id/nav_placeholder"
+        android:title=""
+        android:enabled="false" />
+    
+    <item
+        android:id="@+id/nav_alerts"
+        android:icon="@drawable/ic_bell"
+        android:title="Alerts" />
+    
+    <item
+        android:id="@+id/nav_history"
+        android:icon="@drawable/ic_clock"
+        android:title="History" />
+</menu>

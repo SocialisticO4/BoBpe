@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhonePe Bottom Navigation Bar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .screen-content {
+            flex: 1;
+            padding: 20px;
+            background: white;
+            margin-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .demo-text {
+            color: #333;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .demo-subtitle {
+            color: #666;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .status-text {
+            color: #7c3aed;
+            font-size: 18px;
+            font-weight: 500;
+            text-align: center;
+            padding: 10px 20px;
+            background: rgba(124, 58, 237, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 80px;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+            z-index: 1000;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            padding: 8px 4px;
+        }
+
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+
+        .nav-item svg {
+            width: 26px;
+            height: 26px;
+            stroke: #9ca3af;
+            fill: none;
+            stroke-width: 1.8;
+            margin-bottom: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item.home svg {
+            fill: #9ca3af;
+            stroke: none;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            color: #9ca3af;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        /* QR Scanner Button - Center */
+        .nav-item.qr-scanner {
+            position: relative;
+        }
+
+        .qr-button {
+            position: absolute;
+            top: -24px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid white;
+        }
+
+        .qr-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.45);
+        }
+
+        .qr-button:active {
+            transform: scale(0.95);
+        }
+
+        .qr-button svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+            stroke: none;
+        }
+
+        .nav-item.qr-scanner span {
+            visibility: hidden;
+        }
+
+        /* Active state - History is active by default */
+        .nav-item.active svg {
+            stroke: #7c3aed;
+            color: #7c3aed;
+        }
+
+        .nav-item.active.home svg {
+            fill: #7c3aed;
+            stroke: none;
+        }
+
+        .nav-item.active span {
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        /* Hover effects for desktop */
+        .nav-item:not(.qr-scanner):not(.active):hover svg {
+            stroke: #6b7280;
+            transform: scale(1.1);
+        }
+
+        .nav-item:not(.qr-scanner):not(.active):hover.home svg {
+            fill: #6b7280;
+        }
+
+        .nav-item:not(.qr-scanner):not(.active):hover span {
+            color: #6b7280;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .nav-item svg {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .qr-button {
+                width: 56px;
+                height: 56px;
+                top: -22px;
+            }
+            
+            .qr-button svg {
+                width: 26px;
+                height: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="screen-content">
+        <div class="demo-text">PhonePe Navigation Bar</div>
+        <div class="demo-subtitle">Pixel-perfect replica with interactive elements</div>
+        <div class="status-text" id="status">History tab is active</div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item home" onclick="selectItem(this, 'Home')">
+            <svg viewBox="0 0 24 24">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span>Home</span>
+        </div>
+
+        <div class="nav-item search" onclick="selectItem(this, 'Search')">
+            <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <span>Search</span>
+        </div>
+
+        <div class="nav-item qr-scanner">
+            <div class="qr-button" onclick="openQRScanner()">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                    <rect x="14" y="14" width="3" height="3"/>
+                    <rect x="18" y="14" width="3" height="3"/>
+                    <rect x="14" y="18" width="3" height="3"/>
+                    <rect x="18" y="18" width="3" height="3"/>
+                </svg>
+            </div>
+            <span>Scan</span>
+        </div>
+
+        <div class="nav-item alerts" onclick="selectItem(this, 'Alerts')">
+            <svg viewBox="0 0 24 24">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span>Alerts</span>
+        </div>
+
+        <div class="nav-item history active" onclick="selectItem(this, 'History')">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>History</span>
+        </div>
+    </div>
+
+    <script>
+        function selectItem(element, itemName) {
+            // Remove active class from all items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            element.classList.add('active');
+            
+            // Update status text
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = `${itemName} tab is active`;
+            
+            // Add a subtle animation to the status
+            statusElement.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                statusElement.style.transform = 'scale(1)';
+            }, 200);
+            
+            console.log(`Selected: ${itemName}`);
+        }
+
+        function openQRScanner() {
+            console.log('Opening QR Scanner');
+            
+            // Visual feedback for QR button
+            const qrButton = document.querySelector('.qr-button');
+            const originalBg = qrButton.style.background;
+            qrButton.style.background = 'linear-gradient(135deg, #7c3aed 0%, #6b2fc7 100%)';
+            qrButton.style.transform = 'scale(0.95)';
+            
+            // Update status
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = 'QR Scanner opened!';
+            statusElement.style.background = 'rgba(34, 197, 94, 0.1)';
+            statusElement.style.color = '#16a34a';
+            
+            setTimeout(() => {
+                qrButton.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)';
+                qrButton.style.transform = 'scale(1)';
+                statusElement.style.background = 'rgba(124, 58, 237, 0.1)';
+                statusElement.style.color = '#7c3aed';
+                statusElement.textContent = 'History tab is active';
+            }, 1000);
+        }
+
+        // Initialize with History as active (matching the screenshot)
+        document.addEventListener('DOMContentLoaded', function() {
+            const historyItem = document.querySelector('.nav-item.history');
+            console.log('Navigation bar initialized - History tab active');
+        });
+
+        // Add subtle animations on load
+        window.addEventListener('load', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    item.style.transition = 'all 0.3s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, index * 50);
+            });
+        });
+    </script>
+</body>
+</html>

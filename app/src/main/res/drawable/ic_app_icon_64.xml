@@ -1,0 +1,39 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Circular background with gradient -->
+    <group>
+        <!-- Main circle background -->
+        <path
+            android:pathData="M32,32 m-30,0 a30,30 0,1 1,60 0 a30,30 0,1 1,-60 0"
+            android:fillColor="#4C1D95" />
+
+        <!-- Gradient overlay layers -->
+        <path
+            android:pathData="M32,32 m-28,0 a28,28 0,1 1,56 0 a28,28 0,1 1,-56 0"
+            android:fillColor="#7C3AED"
+            android:fillAlpha="0.7" />
+
+        <path
+            android:pathData="M32,32 m-25,0 a25,25 0,1 1,50 0 a25,25 0,1 1,-50 0"
+            android:fillColor="#5F4BDB"
+            android:fillAlpha="0.5" />
+    </group>
+
+    <!-- PhoneBe "Be" text -->
+    <group android:fillColor="#FFFFFF">
+
+        <!-- Letter "B" -->
+        <path
+            android:pathData="M16,20 L16,44 L26,44 C30,44 32,42 32,38 L32,37 C32,35 31,34 29,33 C31,32 32,30 32,28 L32,26 C32,22 30,20 26,20 L16,20 Z M20,24 L25,24 C26,24 27,25 27,26 L27,28 C27,29 26,30 25,30 L20,30 L20,24 Z M20,34 L25,34 C26,34 27,35 27,36 L27,38 C27,39 26,40 25,40 L20,40 L20,34 Z" />
+
+        <!-- Letter "e" -->
+        <path
+            android:pathData="M36,28 C36,24 38,22 42,22 C46,22 48,24 48,28 L48,30 L40,30 C40,32 41,33 42,33 C43,33 44,32 44,31 L47,31 C47,34 45,36 42,36 C38,36 36,34 36,30 L36,28 Z M40,27 L44,27 C44,25 43,25 42,25 C41,25 40,25 40,27 Z" />
+    </group>
+
+</vector>
+
