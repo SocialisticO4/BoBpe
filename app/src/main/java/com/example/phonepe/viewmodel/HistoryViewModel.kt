@@ -24,7 +24,7 @@ class HistoryViewModel(private val transactionDao: TransactionDao) : ViewModel()
 
     fun transactionById(id: Int): StateFlow<Transaction?> =
         transactionDao.getTransactionById(id)
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null) // Changed to Eagerly
 }
 
 class HistoryViewModelFactory(private val transactionDao: TransactionDao) : ViewModelProvider.Factory {
