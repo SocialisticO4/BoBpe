@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +20,21 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Load the apikeys.properties file
+        val apikeyPropertiesFile = rootProject.file("apikeys.properties")
+        val apikeyProperties = Properties()
+        
+        if (apikeyPropertiesFile.exists()) {
+            apikeyProperties.load(FileInputStream(apikeyPropertiesFile))
+        }
+        
+        // Add keys to BuildConfig
+        // Ensure that your apikeys.properties file has these keys defined, otherwise they will be null.
+        // If a key might be missing, you can provide a default value or handle null appropriately.
+        buildConfigField("String", "API_KEY", "\"${apikeyProperties.getProperty("API_KEY", "YOUR_DEFAULT_API_KEY_IF_ANY")}\"")
+        buildConfigField("String", "BASE_URL", "\"${apikeyProperties.getProperty("BASE_URL", "YOUR_DEFAULT_BASE_URL_IF_ANY")}\"")
+        buildConfigField("String", "SECRET_TOKEN", "\"${apikeyProperties.getProperty("SECRET_TOKEN", "YOUR_DEFAULT_SECRET_TOKEN_IF_ANY")}\"")
     }
 
     buildTypes {
@@ -26,6 +44,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {

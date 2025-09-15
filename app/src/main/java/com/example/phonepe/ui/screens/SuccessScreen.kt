@@ -1,6 +1,6 @@
 package com.example.phonepe.ui.screens
 
-import android.util.Log // Added for logging
+import android.util.Log 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,8 +8,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack // Updated import
-import androidx.compose.material.icons.automirrored.filled.Send // Updated import
+import androidx.compose.material.icons.automirrored.filled.ArrowBack 
+import androidx.compose.material.icons.automirrored.filled.Send 
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.History
@@ -31,14 +31,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.phonepe.R // For drawables
+import com.example.phonepe.R 
+// Import your custom NeoPopButton from NeoPopWidgets.kt
 import com.example.phonepe.ui.components.NeoPopButton
 import com.example.phonepe.viewmodel.HistoryViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class) // Opt-in for experimental Material 3 APIs
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuccessScreen(
     navController: NavController,
@@ -47,7 +48,7 @@ fun SuccessScreen(
     val transactionState by historyViewModel.latestTransaction.collectAsState()
     val transaction = transactionState
 
-    Log.d("SuccessScreen", "Latest transaction state: $transaction") // Logging the collected latest transaction
+    Log.d("SuccessScreen", "Latest transaction state: $transaction")
 
     Scaffold(
         topBar = {
@@ -65,7 +66,7 @@ fun SuccessScreen(
                     },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White) // Updated icon
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -75,17 +76,24 @@ fun SuccessScreen(
             }
         },
         bottomBar = {
+            // Using your custom NeoPopButton from NeoPopWidgets.kt (strict signature)
             NeoPopButton(
-                label = "Done",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .height(56.dp),
                 onClick = {
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .height(56.dp)
+                enabled = true, // Explicitly provide enabled state
+                surfaceColor = MaterialTheme.colorScheme.primary, 
+                buttonDepth = 4.dp, 
+                content = null, // Explicitly null as we are using label
+                label = "Done",
+                defaultTextViewBackgroundColor = MaterialTheme.colorScheme.primary, 
+                defaultTextViewContentColor = MaterialTheme.colorScheme.onPrimary 
             )
         }
     ) { paddingValues ->
@@ -110,8 +118,8 @@ fun SuccessScreen(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
-                            .background(Color.DarkGray), // Background for the circle itself
-                        colorFilter = ColorFilter.tint(Color.White) // Tint the vector drawable
+                            .background(Color.DarkGray),
+                        colorFilter = ColorFilter.tint(Color.White)
                     )
                     Spacer(Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
@@ -127,14 +135,14 @@ fun SuccessScreen(
                     Text("Banking Name: ", color = Color.Gray, fontSize = 13.sp)
                     Text(transaction.recipientName, color = Color.White, fontSize = 13.sp)
                     Icon(
-                        imageVector = Icons.Filled.CheckCircle, // Using standard Material icon
+                        imageVector = Icons.Filled.CheckCircle,
                         contentDescription = "Verified",
                         tint = Color(0xFF4CAF50),
                         modifier = Modifier.size(16.dp).padding(start = 4.dp)
                     )
                 }
 
-                HorizontalDivider(color = Color.DarkGray, thickness = 1.dp, modifier = Modifier.padding(vertical = 20.dp)) // Updated Divider
+                HorizontalDivider(color = Color.DarkGray, thickness = 1.dp, modifier = Modifier.padding(vertical = 20.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                      Image(
@@ -160,21 +168,21 @@ fun SuccessScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    ActionButton(icon = Icons.AutoMirrored.Filled.Send, text = "Send Again") {} // Updated icon
+                    ActionButton(icon = Icons.AutoMirrored.Filled.Send, text = "Send Again") {}
                     ActionButton(icon = Icons.Filled.History, text = "View History") {}
                     ActionButton(icon = painterResource(id = R.drawable.ic_split), text = "Split Expense") {}
                     ActionButton(icon = Icons.Filled.IosShare, text = "Share Receipt") {}
                 }
 
                 Spacer(Modifier.height(24.dp))
-                HorizontalDivider(color = Color.DarkGray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp)) // Updated Divider
+                HorizontalDivider(color = Color.DarkGray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
 
                 Row(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                     Text("Contact PhonePe Support", color = Color.White, fontSize = 14.sp)
                     Spacer(Modifier.weight(1f))
                     Image(painterResource(id = R.drawable.ic_chevron_right), contentDescription = "Go", colorFilter = ColorFilter.tint(Color.Gray), modifier = Modifier.size(20.dp))
                 }
-                HorizontalDivider(color = Color.DarkGray, thickness = 1.dp, modifier = Modifier.padding(bottom = 16.dp)) // Updated Divider
+                HorizontalDivider(color = Color.DarkGray, thickness = 1.dp, modifier = Modifier.padding(bottom = 16.dp))
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                     Text("Powered by ", color = Color.Gray, fontSize = 12.sp)

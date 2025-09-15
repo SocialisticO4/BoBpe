@@ -1,56 +1,69 @@
 package com.example.phonepe
 
+// import androidx.compose.foundation.background // Likely unused if Box only has Image background
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountBalanceWallet
-import androidx.compose.material.icons.outlined.CardGiftcard
-import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.filled.QrCodeScanner
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
-import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.phonepe.data.AppDatabase
-import com.example.phonepe.ui.HistoryViewModel as EventLoggingViewModel
-import com.example.phonepe.ui.HistoryViewModelFactory as EventLoggingViewModelFactory
 import com.example.phonepe.ui.screens.HistoryScreen
 import com.example.phonepe.ui.screens.HomeScreen
 import com.example.phonepe.ui.screens.PaymentScreen
+import com.example.phonepe.ui.screens.PlaceholderScreen
 import com.example.phonepe.ui.screens.ScannerScreen
 import com.example.phonepe.ui.screens.SuccessScreen
 import com.example.phonepe.ui.screens.TransactionDetailScreen
-import com.example.phonepe.ui.screens.PlaceholderScreen
+import com.example.phonepe.ui.HistoryViewModel as EventLoggingViewModel
+import com.example.phonepe.ui.HistoryViewModelFactory as EventLoggingViewModelFactory
 
 class MainActivity : ComponentActivity() {
     private val eventLoggingVm: EventLoggingViewModel by viewModels { EventLoggingViewModelFactory(application) }
@@ -61,7 +74,7 @@ class MainActivity : ComponentActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false // Keep false for light nav bar icons if bg is dark
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false
 
         setContent {
             MaterialTheme {
@@ -92,7 +105,7 @@ private fun App(eventLoggingVm: EventLoggingViewModel) {
 
     Scaffold(
         bottomBar = {
-            BottomNavBar(
+            BottomNavBarV3(
                 currentRoute = currentRoute,
                 onNavigate = { route ->
                     navController.navigate(route) {
@@ -111,16 +124,13 @@ private fun App(eventLoggingVm: EventLoggingViewModel) {
         ) {
             composable(Routes.HOME) { 
                 HomeScreen(
+                    navController = navController, 
                     onShowHistory = {
                         eventLoggingVm.logEvent("action", "open_history")
                         navController.navigate(Routes.HISTORY)
                     }
                 )
             }
-            // Routes for items previously in bottom nav but now removed, can be accessed otherwise or removed.
-            // composable(Routes.SEARCH) { SearchScreen(navController) } 
-            // composable(Routes.NOTIFICATIONS) { PlaceholderScreen(navController, "Notifications") } 
-            
             composable(Routes.SCANNER) { ScannerScreen(navController) } 
             composable(Routes.HISTORY) { 
                 HistoryScreen(
@@ -154,6 +164,7 @@ private fun App(eventLoggingVm: EventLoggingViewModel) {
             }
             composable(Routes.PAY) { PlaceholderScreen(navController, "Pay Screen") }
             composable(Routes.REWARDS) { PlaceholderScreen(navController, "Rewards Screen") }
+            composable(Routes.OFFERS) { PlaceholderScreen(navController, "Offers Screen") }
         }
     }
 }
@@ -166,19 +177,53 @@ private object Routes {
     const val TRANSACTION_DETAIL = "transaction_detail/{transactionId}"
     const val PAY = "pay_screen"
     const val REWARDS = "rewards_screen"
-    // Removed SEARCH and NOTIFICATIONS as they are no longer in bottom nav
+    const val OFFERS = "offers" 
 }
 
+data class BottomNavItemV3(
+    val label: String,
+    val route: String,
+    @DrawableRes val iconRes: Int,
+    @DrawableRes val selectedIconRes: Int?,
+    val isFab: Boolean = false
+)
+
 @Composable
-private fun BottomNavBar(currentRoute: String?, onNavigate: (String) -> Unit) {
+private fun BottomNavBarV3(currentRoute: String?, onNavigate: (String) -> Unit) {
     val haptic = LocalHapticFeedback.current
 
     val navItems = listOf(
-        BottomNavItem("Home", Routes.HOME, Icons.Outlined.Home),
-        BottomNavItem("Pay", Routes.PAY, Icons.Outlined.AccountBalanceWallet),
-        BottomNavItem("Scan QR", Routes.SCANNER, Icons.Filled.QrCodeScanner, isFab = true),
-        BottomNavItem("Rewards", Routes.REWARDS, Icons.Outlined.CardGiftcard),
-        BottomNavItem("History", Routes.HISTORY, Icons.Outlined.History)
+        BottomNavItemV3(
+            label = "Home",
+            route = Routes.HOME,
+            iconRes = R.drawable.bottom_nav_home_normal,      
+            selectedIconRes = R.drawable.bottom_nav_home_selected 
+        ),
+        BottomNavItemV3(
+            label = "Pay",
+            route = Routes.PAY,
+            iconRes = R.drawable.bottom_nav_pay_normal, 
+            selectedIconRes = R.drawable.bottom_nav_pay_selected 
+        ),
+        BottomNavItemV3(
+            label = "Scan QR",
+            route = Routes.SCANNER,
+            iconRes = R.drawable.ic_nav_qr, 
+            selectedIconRes = null, 
+            isFab = true
+        ),
+        BottomNavItemV3(
+            label = "Rewards",
+            route = Routes.REWARDS,
+            iconRes = R.drawable.bottom_nav_rewards_normal, 
+            selectedIconRes = R.drawable.bottom_nav_rewards_selected 
+        ),
+        BottomNavItemV3(
+            label = "History",
+            route = Routes.HISTORY,
+            iconRes = R.drawable.bottom_nav_history_normal,
+            selectedIconRes = R.drawable.bottom_nav_history_selected
+        )
     )
 
     val bottomNavHeight = 60.dp
@@ -187,112 +232,88 @@ private fun BottomNavBar(currentRoute: String?, onNavigate: (String) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(bottomNavHeight + fabSize / 3) // Adjusted height to accommodate FAB overlap
-            .background(Color.Transparent) // Main Box is transparent
+            .height(bottomNavHeight + fabSize / 3)
     ) {
-        // Actual Bottom Nav Bar background
-        Surface(
+        Image(
+            painter = painterResource(id = R.drawable.nav_bar),
+            contentDescription = "Bottom Navigation Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
+        )
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .height(bottomNavHeight)
-                .shadow(elevation = 4.dp, shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)),
-            color = Color(0xFFF0F0F0) // Light gray background as per screenshot
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                navItems.forEach { item ->
-                    if (item.isFab) {
-                        // Spacer for the FAB area
-                        Spacer(modifier = Modifier.width(fabSize)) 
-                    } else {
-                        val isSelected = currentRoute == item.route
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxHeight()
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null, // No ripple if haptic is primary feedback
-                                    onClick = { 
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress) // Or Click
-                                        onNavigate(item.route)
-                                    }
-                                )
-                                .padding(vertical = 4.dp)
-                        ) {
-                            Icon(
-                                imageVector = item.icon,
-                                contentDescription = item.label,
-                                tint = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray,
-                                modifier = Modifier.size(24.dp)
+            navItems.forEach { item ->
+                if (item.isFab) {
+                    Spacer(modifier = Modifier.width(fabSize))
+                } else {
+                    val isSelected = currentRoute == item.route
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onNavigate(item.route)
+                                }
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = item.label,
-                                fontSize = 11.sp,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray
-                            )
+                            .padding(vertical = 4.dp)
+                    ) {
+                        val iconToDisplay = if (isSelected && item.selectedIconRes != null) {
+                            item.selectedIconRes
+                        } else {
+                            item.iconRes
                         }
+                        Icon(
+                            painter = painterResource(id = iconToDisplay),
+                            contentDescription = item.label,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = item.label,
+                            fontSize = 11.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.DarkGray
+                        )
                     }
                 }
             }
         }
 
-        // Centered FAB (QR Scanner)
         val qrItem = navItems.first { it.isFab }
         FloatingActionButton(
-            onClick = { 
+            onClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                onNavigate(qrItem.route) 
+                onNavigate(qrItem.route)
             },
             modifier = Modifier
-                .align(Alignment.TopCenter) // Align to top of the Box, then offset
-                .offset(y = (-fabSize / 3)) // Offset to make it sit above the bar
+                .align(Alignment.TopCenter)
+                .offset(y = (-fabSize / 3))
                 .size(fabSize),
             shape = CircleShape,
-            containerColor = Color(0xFF6200EE), // Purple color similar to screenshot
+            containerColor = Color(0xFF673AB7),
             contentColor = Color.White
         ) {
             Icon(
-                imageVector = qrItem.icon,
+                painter = painterResource(id = qrItem.iconRes),
                 contentDescription = qrItem.label,
-                modifier = Modifier.size(fabSize / 2)
+                modifier = Modifier.size(fabSize / 2),
+                tint = Color.White
             )
         }
     }
 }
-
-data class BottomNavItem(
-    val label: String,
-    val route: String,
-    val icon: ImageVector,
-    val isFab: Boolean = false
-)
-
-// PlaceholderScreen.kt (if not already created for previous steps, create a simple one)
-// package com.example.phonepe.ui.screens
-// 
-// import androidx.compose.foundation.layout.Box
-// import androidx.compose.foundation.layout.fillMaxSize
-// import androidx.compose.material3.Text
-// import androidx.compose.runtime.Composable
-// import androidx.compose.ui.Alignment
-// import androidx.compose.ui.Modifier
-// import androidx.navigation.NavController
-// 
-// @Composable
-// fun PlaceholderScreen(navController: NavController, screenName: String) {
-//     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//         Text(text = "$screenName - Placeholder")
-//     }
-// }

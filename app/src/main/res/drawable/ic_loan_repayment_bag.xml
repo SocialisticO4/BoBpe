@@ -1,0 +1,34 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Money bag outline -->
+    <path
+        android:pathData="M8,6C8,4.89543 8.89543,4 10,4H14C15.1046,4 16,4.89543 16,6V7H18C19.1046,7 20,7.89543 20,9V17C20,19.2091 18.2091,21 16,21H8C5.79086,21 4,19.2091 4,17V9C4,7.89543 4.89543,7 6,7H8V6Z"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineJoin="round"/>
+    
+    <!-- Bag tie/closure -->
+    <path
+        android:pathData="M8,7H16"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"/>
+    
+    <!-- Currency symbol (Rupee) -->
+    <path
+        android:pathData="M9,12h4M9,15h4M12,12v6l-2,-2"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    
+    <!-- Bag handles -->
+    <path
+        android:pathData="M8,6V5C8,4.44772 8.44772,4 9,4H15C15.5523,4 16,4.44772 16,5V6"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"/>
+</vector>

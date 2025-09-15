@@ -15,8 +15,8 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
-        mavenCentral()
-        maven(url = "https://libs.dev.cred.club/")
+        mavenCentral() // Essential for finding many libraries, including club.cred:neopop
+        maven(url = "https://libs.dev.cred.club/") // For other specific CRED libraries
     }
 }
 

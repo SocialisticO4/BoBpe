@@ -52,10 +52,17 @@ fun TransactionDetailScreen(
 ) {
     Log.d("TransactionDetailScreen", "Received transactionId: $transactionId") // Logging received ID
 
-    val transactionState by historyViewModel.transactionById(transactionId).collectAsState()
-    val transaction = transactionState
+    // First try to find the transaction in the in-memory list to avoid showing a loading state briefly
+    val allTransactions by historyViewModel.allTransactions.collectAsState()
+    val immediateTransaction = allTransactions.firstOrNull { it.id == transactionId }
 
-    Log.d("TransactionDetailScreen", "Collected transaction state: $transaction") // Logging collected state
+    // Subscribe to the DAO flow as a fallback
+    val transactionStateFromFlow by historyViewModel.transactionById(transactionId).collectAsState()
+
+    // Prefer the in-memory transaction if available, otherwise use the DAO result
+    val transaction = immediateTransaction ?: transactionStateFromFlow
+
+    Log.d("TransactionDetailScreen", "Resolved transaction: $transaction") // Logging collected state
 
     Scaffold(
         topBar = {

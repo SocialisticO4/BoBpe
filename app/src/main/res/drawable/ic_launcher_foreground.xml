@@ -1,21 +1,16 @@
-<!-- ic_launcher_foreground.xml -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <group android:scaleX="0.6" android:scaleY="0.6" android:translateX="21.6" android:translateY="21.6">
-
-    <!-- PhoneBe "Be" text, scaled and centered appropriately for foreground -->
-    <group android:fillColor="#FFFFFF">
-        <!-- Letter "B" -->
-        <path
-            android:pathData="M16,20 L16,44 L26,44 C30,44 32,42 32,38 L32,37 C32,35 31,34 29,33 C31,32 32,30 32,28 L32,26 C32,22 30,20 26,20 L16,20 Z M20,24 L25,24 C26,24 27,25 27,26 L27,28 C27,29 26,30 25,30 L20,30 L20,24 Z M20,34 L25,34 C26,34 27,35 27,36 L27,38 C27,39 26,40 25,40 L20,40 L20,34 Z" />
-        
-        <!-- Letter "e" -->
-        <path
-            android:pathData="M36,28 C36,24 38,22 42,22 C46,22 48,24 48,28 L48,30 L40,30 C40,32 41,33 42,33 C43,33 44,32 44,31 L47,31 C47,34 45,36 42,36 C38,36 36,34 36,30 L36,28 Z M40,27 L44,27 C44,25 43,25 42,25 C41,25 40,25 40,27 Z" />
-    </group>
-    </group>
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+  <group
+      android:scaleX="0.92"
+      android:scaleY="0.92"
+      android:pivotX="24"
+      android:pivotY="24"
+      android:translateY="-1.5">
+    <path
+        android:pathData="M32.267,20.171c0,-0.681 -0.584,-1.264 -1.264,-1.264h-2.334l-5.35,-6.25c-0.486,-0.584 -1.264,-0.778 -2.043,-0.584l-1.848,0.584c-0.292,0.097 -0.389,0.486 -0.195,0.681l5.836,5.666h-8.851c-0.292,0 -0.486,0.195 -0.486,0.486v0.973c0,0.681 0.584,1.506 1.264,1.506h1.972v4.305c0,3.502 1.611,5.544 4.723,5.544c0.973,0 1.378,-0.097 2.35,-0.486v3.112c0,0.875 0.681,1.556 1.556,1.556h0.786c0.292,0 0.584,-0.292 0.584,-0.584V21.969h2.812c0.292,0 0.486,-0.195 0.486,-0.486V20.171zM26.043,28.413c-0.584,0.292 -1.362,0.389 -1.945,0.389c-1.556,0 -2.097,-0.778 -2.097,-2.529v-4.305h4.043V28.413z"
+        android:fillColor="#fff"/>
+  </group>
 </vector>

@@ -1,19 +1,20 @@
 package com.example.phonepe.ui.screens
 
-import android.util.Log // Added for logging
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.items // Ensure this is the correct items import
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.HourglassEmpty
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.outlined.AccountBalance
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,111 +22,142 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.phonepe.R
 import com.example.phonepe.data.Transaction
-import com.example.phonepe.data.TransactionStatus
 import com.example.phonepe.data.TransactionType
-import com.example.phonepe.viewmodel.HistoryViewModel // Correct ViewModel import
+import com.example.phonepe.viewmodel.HistoryViewModel
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
+// Assuming these colors from your theme or define them if not present
+val LightPurpleBackground = Color(0xFFF3E5F5) // A light purple, adjust as needed
+val PurpleAccent = Color(0xFF673AB7) // A purple for icons/text, adjust as needed
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
-    navController: NavController, 
-    historyViewModel: HistoryViewModel // Use the passed ViewModel
+    navController: NavController,
+    historyViewModel: HistoryViewModel
 ) {
     val transactions by historyViewModel.allTransactions.collectAsState()
+    var searchQuery by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
-    ) {
-        // Header with filters
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Transaction History",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            
-            Row {
-                FilterChip(
-                    onClick = { /* TODO: Implement filter logic */ },
-                    label = { Text("All", fontSize = 12.sp) },
-                    selected = true, // This should be dynamic based on selected filter
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                FilterChip(
-                    onClick = { /* TODO: Implement filter logic */ },
-                    label = { Text("Sent", fontSize = 12.sp) },
-                    selected = false // This should be dynamic
-                )
+    // Optimize by remembering the filtered list
+    val filteredTransactions = remember(transactions, searchQuery) {
+        if (searchQuery.isEmpty()) {
+            transactions
+        } else {
+            transactions.filter { 
+                it.recipientName.contains(searchQuery, ignoreCase = true) || 
+                it.upiId.contains(searchQuery, ignoreCase = true) ||
+                (it.merchantName?.contains(searchQuery, ignoreCase = true) == true) 
             }
         }
+    }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (transactions.isEmpty()) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+    Scaffold(
+        topBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(
-                    imageVector = Icons.Default.HourglassEmpty,
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "No transactions yet",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = "History",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
-                Text(
-                    text = "Your payment history will appear here",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-        } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                val groupedTransactions = transactions.groupBy {
-                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(it.timestamp))
+                Button(
+                    onClick = { /* TODO: Navigate to My Statements */ },
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = LightPurpleBackground)
+                ) {
+                    Icon(
+                        Icons.Outlined.Description,
+                        contentDescription = "My Statements",
+                        modifier = Modifier.size(18.dp),
+                        tint = PurpleAccent
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text("My Statements", color = PurpleAccent, fontSize = 13.sp)
                 }
-                
-                groupedTransactions.entries.forEach { (date, transactionList) ->
-                    item {
-                        Text(
-                            text = date,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                    }
-                    
-                    items(transactionList) { transaction ->
-                        TransactionItem(
+            }
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background) // Use theme background
+        ) {
+            // Search Bar
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                placeholder = { Text("Search transactions", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.Tune, // Filter icon
+                        contentDescription = "Filter",
+                        tint = PurpleAccent
+                    )
+                },
+                shape = RoundedCornerShape(28.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = PurpleAccent,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedContainerColor = LightPurpleBackground.copy(alpha = 0.5f),
+                    unfocusedContainerColor = LightPurpleBackground.copy(alpha = 0.5f)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (filteredTransactions.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        if (searchQuery.isNotEmpty()) "No matching transactions found." else "No transactions yet.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(
+                        items = filteredTransactions, 
+                        key = { transaction -> transaction.id } // Add key for performance
+                    ) { transaction ->
+                        TransactionHistoryItem(
                             transaction = transaction,
                             onClick = {
-                                Log.d("HistoryScreen", "Navigating to detail for transaction ID: ${transaction.id}") // Logging transaction ID
+                                Log.d("HistoryScreen", "Navigating to detail for transaction ID: ${transaction.id}")
                                 navController.navigate("transaction_detail/${transaction.id}")
                             }
                         )
@@ -137,154 +169,74 @@ fun HistoryScreen(
 }
 
 @Composable
-private fun TransactionItem(
+private fun TransactionHistoryItem(
     transaction: Transaction,
     onClick: () -> Unit
 ) {
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .clickable { onClick() }
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(getTransactionIconBackground(transaction.transactionType)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = getTransactionIcon(transaction.transactionType),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-            
-            Spacer(modifier = Modifier.width(12.dp))
-            
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+        Image(
+            painter = if (transaction.transactionType == TransactionType.RECEIVED) {
+                painterResource(id = R.drawable.android_transaction_received_icon_selected)
+            } else {
+                painterResource(id = R.drawable.android_transaction_paid_icon_selected)
+            },
+            contentDescription = "Transaction type",
+            modifier = Modifier.size(36.dp)
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = if (transaction.transactionType == TransactionType.RECEIVED) 
+                        "Received from ${transaction.recipientName}" 
+                    else 
+                        "Paid to ${transaction.merchantName ?: transaction.recipientName}",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(transaction.timestamp)),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Column(horizontalAlignment = Alignment.End) {
+            Text(
+                text = NumberFormat.getCurrencyInstance(Locale("en", "IN")).format(transaction.amount),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface // Black as per image
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = getTransactionTitle(transaction),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = if (transaction.paymentSource == "QR_SCAN") 
-                        "${transaction.upiId} • QR Payment" 
-                    else transaction.upiId,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date(transaction.timestamp)),
+                    text = if (transaction.transactionType == TransactionType.RECEIVED) "Credited to" else "Debited from",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-            }
-            
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(
-                    text = "₹${formatAmount(transaction.amount)}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = if (transaction.transactionType == TransactionType.RECEIVED) 
-                        Color(0xFF10B981) else MaterialTheme.colorScheme.onSurface
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    Icons.Outlined.AccountBalance, // Placeholder bank/card icon
+                    contentDescription = "Account",
+                    modifier = Modifier.size(12.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = getStatusIcon(transaction.status),
-                        contentDescription = null,
-                        modifier = Modifier.size(12.dp),
-                        tint = getStatusColor(transaction.status)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = transaction.status.name,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = getStatusColor(transaction.status)
-                    )
-                }
             }
         }
     }
-}
-
-// Helper functions (getTransactionTitle, getTransactionIcon, etc.) remain the same
-private fun getTransactionTitle(transaction: Transaction): String {
-    return when (transaction.transactionType) {
-        TransactionType.PAYMENT -> {
-            val prefix = if (transaction.paymentSource == "QR_SCAN") "QR Payment to" else "Paid to"
-            val name = transaction.merchantName ?: transaction.recipientName
-            "$prefix $name"
-        }
-        TransactionType.RECEIVED -> "Received from ${transaction.recipientName}"
-        TransactionType.RECHARGE -> "Mobile Recharge"
-        TransactionType.BILL_PAYMENT -> "Bill Payment"
-        TransactionType.BANK_TRANSFER -> "Bank Transfer"
-    }
-}
-
-private fun getTransactionIcon(type: TransactionType): ImageVector {
-    return when (type) {
-        TransactionType.PAYMENT -> Icons.Default.ArrowUpward
-        TransactionType.RECEIVED -> Icons.Default.ArrowDownward
-        else -> Icons.Default.ArrowUpward // Default or specific icons for others
-    }
-}
-
-private fun getTransactionIconBackground(type: TransactionType): Color {
-    return when (type) {
-        TransactionType.PAYMENT -> Color(0xFFEF4444) // Red
-        TransactionType.RECEIVED -> Color(0xFF10B981) // Green
-        TransactionType.RECHARGE -> Color(0xFF3B82F6) // Blue
-        TransactionType.BILL_PAYMENT -> Color(0xFFF59E0B) // Orange
-        TransactionType.BANK_TRANSFER -> Color(0xFF8B5CF6) // Purple
-    }
-}
-
-private fun getStatusIcon(status: TransactionStatus): ImageVector {
-    return when (status) {
-        TransactionStatus.SUCCESS -> Icons.Default.CheckCircle
-        TransactionStatus.FAILED -> Icons.Default.Error
-        // Consider PENDING, CANCELLED as well if they are used
-        else -> Icons.Default.HourglassEmpty 
-    }
-}
-
-private fun getStatusColor(status: TransactionStatus): Color {
-    return when (status) {
-        TransactionStatus.SUCCESS -> Color(0xFF10B981) // Green
-        TransactionStatus.FAILED -> Color(0xFFEF4444) // Red
-        TransactionStatus.PENDING -> Color(0xFFF59E0B) // Orange
-        TransactionStatus.CANCELLED -> Color(0xFF6B7280) // Gray
-    }
-}
-
-private fun formatAmount(amount: Double): String {
-    // Ensure this Locale is what you intend for currency formatting, e.g., for India
-    return NumberFormat.getNumberInstance(Locale("en", "IN")).format(amount)
+    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), thickness = 0.5.dp)
 }

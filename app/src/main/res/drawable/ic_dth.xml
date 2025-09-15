@@ -1,0 +1,44 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Satellite dish -->
+    <path
+        android:pathData="M4,12C4,7.58172 7.58172,4 12,4C16.4183,4 20,7.58172 20,12"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M7,12C7,10.3431 8.34315,9 10,9C11.6569,9 13,10.3431 13,12"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"/>
+    
+    <!-- Center receptor -->
+    <path
+        android:pathData="M10,12 A2,2 0 1,1 14,12 A2,2 0 1,1 10,12"
+        android:fillColor="#FF000000"/>
+    
+    <!-- Support pole -->
+    <path
+        android:pathData="M12,14L12,20"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"/>
+    
+    <!-- Base -->
+    <path
+        android:pathData="M9,20L15,20"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"/>
+    
+    <!-- Signal waves -->
+    <path
+        android:pathData="M16,8L18,6M18,6L20,4M18,6L16,4"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+</vector>
