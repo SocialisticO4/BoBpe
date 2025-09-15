@@ -61,12 +61,21 @@ The primary goal of this project is to:
 
 ## Download APK (for testing)
 
+## Download APK (for testing)
+
 If you just want to try out the app on an Android device without building it from the source:
 
-1.  Go to the [**Releases**](https://github.com/SocialisticO4/BoBpe.git/releases) page of this repository.
-2.  Look for the latest release.
-3.  Download the `.apk` file (e.g., `app-debug.apk` or `app-release.apk`) from the "Assets" section of the release.
-4.  You may need to enable "Install from unknown sources" in your Android device's settings to install the APK.
+1. Go to the [**Releases**](https://github.com/SocialisticO4/BoBpe/releases) page of this repository.
+2. Look for the latest release.
+3. Download the `.apk` file (e.g., `app-debug.apk` or `app-release.apk`) from the "Assets" section of the release.
+4. Transfer the APK to your Android device.
+5. You may need to enable "Install from unknown sources" in your Android device's settings to install the APK.
+
+## Security Notice
+This is an educational project. Never use real financial information or credentials.
+
+## Disclaimer
+This is an unofficial educational project and is not affiliated with PhonePe or any financial institution.
 
 **Note:** The APKs provided are for demonstration and testing purposes only, as this is an educational mock-up.
 
