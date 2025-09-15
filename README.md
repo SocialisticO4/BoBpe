@@ -63,7 +63,7 @@ The primary goal of this project is to:
 
 If you just want to try out the app on an Android device without building it from the source:
 
-1.  Go to the [**Releases**](YOUR_GITHUB_REPOSITORY_URL/releases) page of this repository. (Remember to replace `YOUR_GITHUB_REPOSITORY_URL` with your actual GitHub repository URL)
+1.  Go to the [**Releases**]((https://github.com/SocialisticO4/BoBpe.git)/releases) page of this repository.
 2.  Look for the latest release.
 3.  Download the `.apk` file (e.g., `app-debug.apk` or `app-release.apk`) from the "Assets" section of the release.
 4.  You may need to enable "Install from unknown sources" in your Android device's settings to install the APK.
